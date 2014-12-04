@@ -58,7 +58,7 @@ void        (*renderCallback)() = NULL;
 EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreLibHandle,
         void *Context, void (*DebugCallback)(void *, int, const char *))
 {
-#ifdef __NEON_OPT
+#ifdef __ARM_NEON__
    unsigned cpu = 0;
 
    if (perf_get_cpu_features_cb)

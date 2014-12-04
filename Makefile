@@ -112,7 +112,7 @@ else ifeq ($(platform), ios)
 	GLIDE2GL=0
 	GLIDE64MK2=1
 	HAVE_NEON=1
-	CPUFLAGS += -marm -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -D__arm__ -DARM_ASM -D__NEON_OPT
+	CPUFLAGS += -marm -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -D__arm__ -DARM_ASM
 
 	CC = clang -arch armv7 -isysroot $(IOSSDK)
 	CC_AS = perl ./tools/gas-preprocessor.pl $(CC)
@@ -143,7 +143,7 @@ else ifeq ($(platform), android)
 	PLATCFLAGS += -DANDROID
 	CPUCFLAGS  += -DNO_ASM -DNOSSE
 	HAVE_NEON = 1
-	CPUFLAGS += -marm -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -D__arm__ -DARM_ASM -D__NEON_OPT
+	CPUFLAGS += -marm -mcpu=cortex-a8 -mfpu=neon -mfloat-abi=softfp -D__arm__ -DARM_ASM
 	CFLAGS += -DANDROID
 
 	PLATFORM_EXT := unix
@@ -163,7 +163,7 @@ else ifeq ($(platform), qnx)
 	GLES = 1
 	PLATCFLAGS += -DNO_ASM -DNOSSE -D__BLACKBERRY_QNX__
 	HAVE_NEON = 1
-	CPUFLAGS += -marm -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=softfp -D__arm__ -DARM_ASM -D__NEON_OPT
+	CPUFLAGS += -marm -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=softfp -D__arm__ -DARM_ASM
 	CFLAGS += -D__QNX__
 
 	PLATFORM_EXT := unix

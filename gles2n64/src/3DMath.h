@@ -45,7 +45,7 @@ static INLINE void Transpose3x3Matrix( float mtx[4][4] )
     mtx[2][1] = tmp;
 }
 
-#ifdef __NEON_OPT
+#ifdef __ARM_NEON__
 void MathInitNeon();
 #endif
 

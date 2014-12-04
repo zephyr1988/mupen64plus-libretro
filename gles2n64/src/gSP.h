@@ -213,7 +213,7 @@ extern void (*gSPTransformVertex)(float vtx[4], float mtx[4][4]);
 extern void (*gSPLightVertex)(u32 v);
 extern void (*gSPBillboardVertex)(u32 v, u32 i);
 
-#ifdef __NEON_OPT
+#ifdef __ARM_NEON__
 void gSPInitNeon();
 #endif
 

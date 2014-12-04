@@ -41,7 +41,7 @@ TARGET_NAME := mupen64plus
 CC_AS ?= $(CC)
 
 # Unix
-ifneq (,$(findstring unix,$(platform)))
+ifeq ($(platform), unix)
 	TARGET := $(TARGET_NAME)_libretro.so
 	LDFLAGS += -shared -Wl,--version-script=$(LIBRETRO_DIR)/link.T -Wl,--no-undefined
 
@@ -57,7 +57,7 @@ ifneq (,$(findstring unix,$(platform)))
 	PLATFORM_EXT := unix
 
 # Raspberry Pi
-else ifneq (,$(findstring rpi,$(platform)))
+else ifeq ($(platform), rpi)
 	TARGET := $(TARGET_NAME)_libretro.so
 	LDFLAGS += -shared -Wl,--version-script=$(LIBRETRO_DIR)/link.T
 	fpic = -fPIC
@@ -69,7 +69,7 @@ else ifneq (,$(findstring rpi,$(platform)))
 	WITH_DYNAREC=arm
 
 # i.MX6
-else ifneq (,$(findstring imx6,$(platform)))
+else ifeq ($(platform), imx6)
 	TARGET := $(TARGET_NAME)_libretro.so
 	LDFLAGS += -shared -Wl,--version-script=$(LIBRETRO_DIR)/link.T
 	fpic = -fPIC
@@ -81,7 +81,7 @@ else ifneq (,$(findstring imx6,$(platform)))
 	HAVE_NEON=1
 
 # OS X
-else ifneq (,$(findstring osx,$(platform)))
+else ifeq ($(platform), osx)
 	TARGET := $(TARGET_NAME)_libretro.dylib
 	LDFLAGS += -dynamiclib
 	OSXVER = `sw_vers -productVersion | cut -d. -f 2`
@@ -97,7 +97,7 @@ else ifneq (,$(findstring osx,$(platform)))
 	PLATFORM_EXT := unix
 
 # iOS
-else ifneq (,$(findstring ios,$(platform)))
+else ifeq ($(platform), ios)
 	ifeq ($(IOSSDK),)
 		IOSSDK := $(shell xcrun -sdk iphoneos -show-sdk-path)
 	endif
@@ -130,7 +130,7 @@ else ifneq (,$(findstring ios,$(platform)))
 	WITH_DYNAREC=arm
 
 # Android
-else ifneq (,$(findstring android,$(platform)))
+else ifeq ($(platform), android)
 	fpic = -fPIC
 	TARGET := $(TARGET_NAME)_libretro_android.so
 	LDFLAGS += -shared -Wl,--version-script=$(LIBRETRO_DIR)/link.T -Wl,--no-undefined -Wl,--warn-common
@@ -176,7 +176,7 @@ else ifneq (,$(findstring armv,$(platform)))
 	fpic := -fPIC
 	LDFLAGS += -shared -Wl,--version-script=$(LIBRETRO_DIR)/link.T -Wl,--no-undefined
 	INCFLAGS += -I.
-	CPUFLAGS += -DNO_ASM -DNOSSE
+	CPUFLAGS += -DNO_ASM -DNOSSE -ffast-math -fno-strict-aliasing
 	WITH_DYNAREC=arm
 	ifneq (,$(findstring gles,$(platform)))
 		GLES := 1
@@ -186,11 +186,11 @@ else ifneq (,$(findstring armv,$(platform)))
 	endif
 	ifneq (,$(findstring cortexa8,$(platform)))
 		CPUFLAGS += -marm -mcpu=cortex-a8
-	else ifneq (,$(findstring cortexa9,$(platform)))
+	else ifneq  (,$(findstring cortexa9,$(platform)))
 		CPUFLAGS += -marm -mcpu=cortex-a9
 	endif
-	CPUFLAGS += -marm
-	ifneq (,$(findstring neon,$(platform)))
+	CPUFLAGS += -marm -D__arm__
+	ifneq  (,$(findstring neon,$(platform)))
 		CPUFLAGS += -mfpu=neon
 		HAVE_NEON = 1
 	endif
@@ -216,7 +216,7 @@ else ifeq ($(platform), emscripten)
 	#HAVE_SHARED_CONTEXT := 1
 
 # Windows
-else ifneq (,$(findstring win,$(platform)))
+else ifeq ($(platform), win)
 	TARGET := $(TARGET_NAME)_libretro.dll
 	LDFLAGS += -shared -static-libgcc -static-libstdc++ -Wl,--version-script=$(LIBRETRO_DIR)/link.T -lwinmm -lgdi32
 	GL_LIB := -lopengl32
@@ -271,12 +271,6 @@ LDFLAGS	 += $(fpic)
 
 all: $(TARGET)
 
-$(CORE_DIR)/src/r4300/new_dynarec/linkage_arm.o: $(CORE_DIR)/src/r4300/new_dynarec/linkage_arm.S
-	$(CC_AS) $(CFLAGS) -c $^ -o $@
-
-$(VIDEODIR_RICE)/RenderBase_neon.o: $(VIDEODIR_RICE)/RenderBase_neon.S
-	$(CC_AS) $(CFLAGS) -c $^ -o $@
-
 %.o: %.S
 	$(CC_AS) $(CFLAGS) -c $^ -o $@
 
@@ -287,7 +281,7 @@ $(VIDEODIR_RICE)/RenderBase_neon.o: $(VIDEODIR_RICE)/RenderBase_neon.S
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 $(TARGET): $(OBJECTS)
-	$(CXX) -o $@ $(OBJECTS) $(LDFLAGS) $(GL_LIB)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) $(LDFLAGS) $(GL_LIB)
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)

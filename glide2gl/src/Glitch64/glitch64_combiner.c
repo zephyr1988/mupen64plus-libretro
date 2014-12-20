@@ -108,7 +108,7 @@ static int tex1_combiner_ext = 0;
 static int c_combiner_ext = 0;
 static int a_combiner_ext = 0;
 
-#if !defined(__LIBRETRO__) || defined(HAVE_OPENGLES2) // Desktop GL fix
+#if !defined(__LIBRETRO__) || defined(GLES) // Desktop GL fix
 #define GLSL_VERSION "100"
 #else
 #define GLSL_VERSION "120"

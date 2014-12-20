@@ -33,9 +33,9 @@ _audio_convert_s16_float_asm:
    vmul.f32 q8, q8, q8
    vadd.f32 q8, q8, q8
 
-//   # Apply gain
-//   vld1.f32 {d6[0]}, [r3]
-//   vmul.f32 q8, q8, d6[0]
+   # Apply gain
+   vld1.f32 {d6[0]}, [r3]
+   vmul.f32 q8, q8, d6[0]
 
 1:
    # Preload here?
